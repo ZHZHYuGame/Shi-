@@ -12,7 +12,7 @@ git branch ----可以再次查看 就可以得到master和name 添加了分支 �
 11. Git 是版本控制工具
 12. git push origin master ---推送 任何分支 推之前要关联远程仓库 git remote add origin<> //pull 拉取
 13.git status
-14.    git config --global user.name "用户名"
+14.    git config --global user.name "用户名".
  	git config --global user.email "邮箱"
 15.
 
