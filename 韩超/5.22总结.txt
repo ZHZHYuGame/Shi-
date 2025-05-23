@@ -21,3 +21,22 @@ git branch ----可以再次查看 就可以得到master和name 添加了分支 �
 
 17.操作 先拉取所有新的文件 再把自己的文件提交 再推送
 
+git add Data.txt  -------添加文件到缓存区里
+git commit -m ------提交到本地仓库里 ---m+"注释 修改的内容 "
+git log -----"打印注释"
+git branch -----"查看分支 一开始自带master"  ---分支就是 把一个程序分为多个版本 每个版本有不同的修改 到最后可以合并到一个里
+git checkout -b name ----name 是要添加分支的名字 ---创建分支
+git branch ----可以再次查看 就可以得到master和name 添加了分支 代码的修改就在name分支里修改 不会更改master的内容
+在分支里增加了描述的内容时 重新添加并提交
+7. git add . 添加所有文件到仓库里 git commit -m 提交
+8. git checkout master ---切换到master分支   ---切换分支
+9. git merge name  ----把name分支更改的东西 合并到了master里 ---合并分支
+10. git init 自动生成.git  ---文件夹里的.git 就是代码仓库
+11. Git 是版本控制工具
+12. git push origin master ---推送 任何分支 推之前要关联远程仓库 git remote add origin<> //pull 拉取
+13.git status
+14.    git config --global user.name "用户名".
+ 	git config --global user.email "邮箱"
+15.
+11111
+
