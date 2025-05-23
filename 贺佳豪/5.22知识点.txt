@@ -1,4 +1,5 @@
-可用来进行缩写0111
+可用3333
+可用2222
 alias git-log='git log --pretty=oneline --all --graph --abbrev-commit'
 
 
