@@ -1,7 +1,7 @@
 git add Data.txt  -------添加文件到缓存区里111我是韩超111
 git commit -m ------提交到本地仓库里 ---m+"注释 修改的内容 "1111
 git log -----"打印注释"222
-git log -----"打印注释"我是韩超1111111
+git log -----"打印注释"我是韩超123456
 git branch -----"查看分支 一开始自带master"  ---分支就是 把一个程序分为多个版本 每个版本有不同的修改 到最后可以合并到一个里
 git checkout -b name ----name 是要添加分支的名字 ---创建分支
 git branch ----可以再次查看 就可以得到master和name 添加了分支 代码的修改就在name分支里修改 不会更改master的内容
