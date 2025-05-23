@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 hello worf Hahhahahahhaha!!!!
 hello 电视剧发考虑考虑卡拉卡拉看老KLKL看拉卡拉饭卡里卡拉卡拉是开发word 33333333333333333
 >>>>>>> .theirs
@@ -6,15 +7,24 @@ hello 电视剧发考虑考虑卡拉卡拉看老KLKL看拉卡拉饭卡里卡拉�
 hello word
 hello word
 >>>>>>> parent of 1af4035 (second commit)
+=======
+hello worf Hahhahahahhaha!!!!
+hello 电视剧发考虑考虑卡拉卡拉看老KLKL看拉卡拉饭卡里卡拉卡拉是开发word 33333333333333333
+>>>>>>> .theirs
+>>>>>>> 77b3df83b72e07bf718a5f333c451da63e3bf22e
 hello word
 hello word
 hello word
 哈哈哈哈哈
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 77b3df83b72e07bf718a5f333c451da63e3bf22e
 hello word2222
 hello 325345word我修改了你的33
 hello word131234
 哈哈34535哈哈哈
+<<<<<<< HEAD
 =======
 我草拟吗
 我草拟吗
@@ -29,3 +39,6 @@ hello word131234
 sdasdasdsaadadsad
 >>>>>>> parent of 1af4035 (second commit)
 
+=======
+
+>>>>>>> 77b3df83b72e07bf718a5f333c451da63e3bf22e
