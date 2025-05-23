@@ -27,4 +27,5 @@ rm test.txt #删除一个文件，也可以删除文件夹
 git reset --hard <commitID>版本回退
 git add .     提交到暂存区
 git commit -m “some commit” #提交修改
-穆康伟
+贺佳豪2
+贺佳豪
