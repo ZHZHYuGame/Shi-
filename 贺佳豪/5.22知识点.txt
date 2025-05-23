@@ -1,0 +1,29 @@
+可用来进行缩写
+alias git-log='git log --pretty=oneline --all --graph --abbrev-commit'
+
+
+ssh-keygen -t rsa  生成密钥
+ssh-keygen -t rsa -b 4096 -C "@qq.com"
+
+
+cat ~/.ssh/id_rsa.pub  查看密钥
+
+
+分支
+git branch 分支名 创建分支
+git checkout 分支名 #切换分支
+git checkout 分支名
+git checkout -b 分支名      (创建并切换到一个不存在的分支）
+git branch -d 分支名 (删除分支,需要做检查）
+git branch -D 分支名 (删除分支，不做检查 强制删除）
+git merge dev01（合并分支（将dev01合并到现分支中））
+
+git reset --hard commitID  可以使用git-log或git log指令查看
+dit reflog 可以看到已经删除的提交记录
+git init #把当前目录变成git可以管理的仓库
+创建 .gitignore 并在里面写*（后缀）  即可不管理此后缀文件
+touch   创建文件
+rm test.txt #删除一个文件，也可以删除文件夹
+git reset --hard <commitID>版本回退
+git add .     提交到暂存区
+git commit -m “some commit” #提交修改
