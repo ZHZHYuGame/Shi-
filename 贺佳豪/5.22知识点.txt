@@ -1,4 +1,4 @@
-可用来进行缩写
+可用来进行缩写0000
 alias git-log='git log --pretty=oneline --all --graph --abbrev-commit'
 
 
