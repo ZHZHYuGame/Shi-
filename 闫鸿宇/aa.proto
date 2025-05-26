@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package com.example.chat;
+
+import "google/protobuf/timestamp.proto";
+
+message Envelope {
+  string request_id = 1;         
+  oneof content {
+    Request request = 2;
+    Response response = 3;
+  }
+}
+
+message Request {
+  enum RequestType {
+    UNKNOWN = 0;
+    LOGIN = 1;
+    GET_DATA = 2;
+    SEND_MESSAGE = 3;
+    HEARTBEAT = 4;
+  }
+  
+  RequestType type = 1;
+  oneof payload {
+    LoginRequest login = 2;
+    GetDataRequest get_data = 3;
+    SendMessageRequest send_message = 4;
+  }
+}
+
+message Response {
+  string request_id = 1;        
+  StatusCode code = 2;
+  string error_message = 3;      
+  oneof result {
+    LoginResponse login = 4;
+    UserData user_data = 5;
+    MessageAck message_ack = 6;
+  }
+}
+
+enum StatusCode {
+  SUCCESS = 0;
+  BAD_REQUEST = 1;
+  UNAUTHORIZED = 2;
+  NOT_FOUND = 3;
+  INTERNAL_ERROR = 4;
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message GetDataRequest {
+  string user_id = 1;
+}
+
+message SendMessageRequest {
+  string content = 1;
+  string receiver_id = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+message LoginResponse {
+  string auth_token = 1;
+  UserData user_profile = 2;
+}
+
+message MessageAck {
+  string message_id = 1;
+  google.protobuf.Timestamp server_time = 2;
+}
+
+message UserData {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  repeated string friends = 4;
+}
+
+message ChatMessage {
+  string id = 1;
+  string sender_id = 2;
+  string content = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
