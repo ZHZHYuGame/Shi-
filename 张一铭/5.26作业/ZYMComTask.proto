@@ -1,0 +1,232 @@
+syntax = "proto3";
+package com.example.game.task;
+
+// ================ 任务基础定义 ================
+// 任务信息
+message Task {
+  string task_id = 1;          // 任务唯一标识
+  string name = 2;            // 任务名称
+  string description = 3;     // 任务描述
+  TaskType type = 4;          // 任务类型
+  TaskDifficulty difficulty = 5; // 任务难度
+  uint32 level_requirement = 6; // 等级要求
+  string parent_task_id = 7;  // 父任务ID(用于任务链)
+  repeated string prerequisite_tasks = 8; // 前置任务ID列表
+  uint32 max_attempts = 9;    // 最大尝试次数
+  bool is_repeatable = 10;    // 是否可重复
+  uint32 repeat_interval = 11; // 重复间隔(秒)
+  string start_npc_id = 12;   // 起始NPC ID
+  string end_npc_id = 13;     // 结束NPC ID
+  uint32 timeout = 14;        // 任务超时时间(秒)
+  string start_time = 15;     // 任务开始时间
+  string end_time = 16;       // 任务结束时间
+  map<string, string> metadata = 17; // 元数据
+}
+
+// 任务类型枚举
+enum TaskType {
+  MAIN = 0;                 // 主线任务
+  SIDE = 1;                 // 支线任务
+  DAILY = 2;                // 日常任务
+  WEEKLY = 3;               // 周常任务
+  SEASONAL = 4;             // 季节性任务
+  WORLD = 5;                // 世界任务
+  RAID = 6;                 // 团队副本任务
+  ACHIEVEMENT = 7;          // 成就任务
+  HIDDEN = 8;               // 隐藏任务
+}
+
+// 任务难度枚举
+enum TaskDifficulty {
+  EASY = 0;                 // 简单
+  NORMAL = 1;               // 普通
+  HARD = 2;                 // 困难
+  ELITE = 3;                // 精英
+  LEGENDARY = 4;            // 传奇
+}
+
+// ================ 任务状态与进度 ================
+// 玩家任务状态
+message PlayerTask {
+  string task_id = 1;        // 任务ID
+  TaskStatus status = 2;    // 任务状态
+  uint32 progress = 3;      // 当前进度
+  uint32 target_progress = 4; // 目标进度
+  uint32 attempt_count = 5; // 尝试次数
+  string start_time = 6;    // 开始时间
+  string complete_time = 7; // 完成时间
+  string last_updated = 8;  // 最后更新时间
+  map<string, string> custom_data = 9; // 自定义数据
+  bool is_auto_accepted = 10; // 是否自动接受
+}
+
+// 任务状态枚举
+enum TaskStatus {
+  UNASSIGNED = 0;           // 未领取
+  IN_PROGRESS = 1;          // 进行中
+  COMPLETED = 2;            // 已完成
+  FAILED = 3;               // 已失败
+  REWARDED = 4;             // 已领取奖励
+  EXPIRED = 5;              // 已过期
+  LOCKED = 6;               // 已锁定
+}
+
+// 任务目标类型
+enum TaskTargetType {
+  KILL_MONSTER = 0;         // 击杀怪物
+  COLLECT_ITEM = 1;         // 收集物品
+  REACH_LOCATION = 2;       // 到达地点
+  INTERACT_NPC = 3;         // 与NPC交互
+  USE_ITEM = 4;             // 使用物品
+  EQUIP_ITEM = 5;           // 装备物品
+  LEARN_SKILL = 6;          // 学习技能
+  UPGRADE_EQUIPMENT = 7;    // 升级装备
+  DEFEAT_BOSS = 8;          // 击败BOSS
+  COMPLETE_QUEST = 9;       // 完成任务
+  PARTICIPATE_EVENT = 10;   // 参与活动
+  ACHIEVE_SCORE = 11;       // 达到分数
+}
+
+// 任务目标
+message TaskTarget {
+  string task_id = 1;        // 关联任务ID
+  TaskTargetType type = 2;  // 目标类型
+  string target_id = 3;     // 目标ID(怪物ID、物品ID等)
+  string target_name = 4;   // 目标名称
+  uint32 target_count = 5;  // 目标数量
+  uint32 current_count = 6; // 当前数量
+  bool is_complete = 7;     // 是否完成
+  string description = 8;   // 目标描述
+  string location = 9;      // 目标位置
+}
+
+// ================ 任务奖励 ================
+// 任务奖励
+message TaskReward {
+  string task_id = 1;        // 关联任务ID
+  repeated ItemReward item_rewards = 2; // 物品奖励
+  uint32 experience_reward = 3; // 经验奖励
+  uint32 gold_reward = 4;     // 金币奖励
+  uint32 reputation_reward = 5; // 声望奖励
+  repeated SkillReward skill_rewards = 6; // 技能奖励
+  repeated TitleReward title_rewards = 7; // 称号奖励
+  bool is_random_reward = 8;  // 是否随机奖励
+  uint32 random_reward_count = 9; // 随机奖励数量
+}
+
+// 物品奖励
+message ItemReward {
+  string item_id = 1;        // 物品ID
+  uint32 min_count = 2;     // 最小数量
+  uint32 max_count = 3;     // 最大数量
+  float probability = 4;    // 掉落概率(0.0-1.0)
+  bool is_unique = 5;       // 是否唯一
+}
+
+// 技能奖励
+message SkillReward {
+  string skill_id = 1;      // 技能ID
+  uint32 skill_level = 2;   // 技能等级
+}
+
+// 称号奖励
+message TitleReward {
+  string title_id = 1;      // 称号ID
+  string title_name = 2;    // 称号名称
+}
+
+// ================ 任务服务接口 ================
+// 任务服务
+service TaskService {
+  rpc GetAvailableTasks (GetTasksRequest) returns (TaskListResponse) {} // 获取可接任务
+  rpc AcceptTask (TaskActionRequest) returns (TaskActionResponse) {}     // 接受任务
+  rpc AbandonTask (TaskActionRequest) returns (TaskActionResponse) {}    // 放弃任务
+  rpc SubmitTask (TaskActionRequest) returns (TaskActionResponse) {}     // 提交任务
+  rpc ClaimReward (TaskActionRequest) returns (RewardResponse) {}        // 领取奖励
+  rpc GetTaskProgress (GetTasksRequest) returns (TaskProgressResponse) {} // 获取任务进度
+  rpc UpdateTaskProgress (UpdateProgressRequest) returns (TaskActionResponse) {} // 更新任务进度
+  rpc GetTaskTargets (GetTasksRequest) returns (TaskTargetsResponse) {} // 获取任务目标
+}
+
+// 请求消息
+message GetTasksRequest {
+  string player_id = 1;      // 玩家ID
+  repeated TaskType task_types = 2; // 任务类型过滤
+  repeated TaskStatus status_filter = 3; // 状态过滤
+  uint32 page_size = 4;      // 分页大小
+  uint32 page_number = 5;    // 页码
+}
+
+message TaskActionRequest {
+  string player_id = 1;      // 玩家ID
+  string task_id = 2;        // 任务ID
+  map<string, string> params = 3; // 额外参数
+}
+
+message UpdateProgressRequest {
+  string player_id = 1;      // 玩家ID
+  string task_id = 2;        // 任务ID
+  TaskTargetType target_type = 3; // 目标类型
+  string target_id = 4;      // 目标ID
+  uint32 increment = 5;     // 增加量
+  bool force_complete = 6;  // 强制完成
+}
+
+// 响应消息
+message TaskListResponse {
+  uint32 result_code = 1;    // 结果码
+  string message = 2;       // 消息
+  repeated Task tasks = 3;  // 任务列表
+}
+
+message TaskActionResponse {
+  uint32 result_code = 1;    // 结果码
+  string message = 2;       // 消息
+  PlayerTask player_task = 3; // 玩家任务状态
+  repeated TaskTarget targets = 4; // 任务目标
+}
+
+message TaskProgressResponse {
+  uint32 result_code = 1;    // 结果码
+  string message = 2;       // 消息
+  repeated PlayerTask tasks = 3; // 玩家任务状态列表
+}
+
+message TaskTargetsResponse {
+  uint32 result_code = 1;    // 结果码
+  string message = 2;       // 消息
+  repeated TaskTarget targets = 3; // 任务目标列表
+}
+
+message RewardResponse {
+  uint32 result_code = 1;    // 结果码
+  string message = 2;       // 消息
+  TaskReward reward = 3;    // 奖励
+  Player player = 4;        // 更新后的玩家信息
+  Inventory updated_inventory = 5; // 更新后的背包
+}
+
+// 玩家信息(简化版)
+message Player {
+  string player_id = 1;      // 玩家ID
+  string name = 2;          // 玩家名称
+  uint32 level = 3;         // 等级
+  uint32 experience = 4;    // 经验值
+  uint32 gold = 5;          // 金币
+  uint32 reputation = 6;    // 声望
+  repeated string titles = 7; // 拥有的称号
+  repeated string skills = 8; // 拥有的技能
+}
+
+// 背包信息(简化版)
+message Inventory {
+  string player_id = 1;      // 玩家ID
+  repeated InventoryItem items = 2; // 物品列表
+  uint32 capacity = 3;      // 背包容量
+}
+
+// 背包物品(简化版)
+message InventoryItem {
+  string item_id = 1;        // 物品ID
+  uint32 count = 2;         // 数量
+}
