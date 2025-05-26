@@ -1,0 +1,35 @@
+syntax="proto3";
+package GameMessage;
+///客户端向服务器请求当前进行任务
+message C2S_Task_CurrComplete
+{
+    int32 playerId=1;
+}
+///服务器向客户端回馈当前进行任务
+message S2C_task_CurrComplete
+{
+    repeated int32 taskId=1;
+}
+///客户端向服务器请求当前任务进度
+message C2S_Task_CompleteState
+{
+    int32 taskId=1;
+}
+///服务器向客户端回馈当前任务进度
+message S2C_Task_CompleteState
+{
+    int32 Result=0;
+    int32 TaskCompleteState=1;
+}
+enum TaskCompleteState
+{
+    Task_Accept=0,
+    Task_Progress=1,
+    Task_Complete=2,
+}
+enum Result
+{
+    Task_Success=0,
+    Task_fail1=1,
+    Task_Fail=2,
+}
