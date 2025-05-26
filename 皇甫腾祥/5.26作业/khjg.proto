@@ -1,0 +1,97 @@
+syntax = "proto3";
+package Game.Protobuf;
+
+// ==================== 基础数据类型 ==================== //
+message Vector3 {
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+// ==================== 物品系统 ==================== //
+message Item {
+    // ---- 基础信息 ---- //
+    uint32 uid = 1;             // 物品唯一实例ID（服务器生成）
+    int32 item_id = 2;          // 配置表ID（对应ItemConfig）
+    string name = 3;            // 显示名称（可本地化）
+    int32 stack_count = 4;      // 当前堆叠数量
+
+    // ---- 动态属性 ---- //
+    oneof extra_data {
+        Equipment equipment = 10;   // 如果是装备
+        Consumable consumable = 11; // 如果是消耗品
+    }
+    
+    // 装备特有属性
+    message Equipment {
+        int32 durability = 1;      // 耐久度
+        repeated Enchant enchants = 2; // 附魔效果
+        Vector3 dye_color = 3;     // 染色RGB
+    }
+
+    // 消耗品特有属性
+    message Consumable {
+        int32 remain_uses = 1;     // 剩余使用次数（如礼包）
+    }
+
+    // 附魔效果
+    message Enchant {
+        int32 enchant_id = 1;
+        float value = 2;           // 效果值（如攻击+10）
+    }
+}
+
+// ==================== 背包操作 ==================== //
+message BackpackOp {
+    // 操作类型
+    enum OpType {
+        ADD = 0;            // 添加物品
+        REMOVE = 1;         // 移除物品
+        MOVE = 2;           // 移动物品
+        SPLIT = 3;          // 拆分堆叠
+        USE = 4;            // 使用物品
+        ENHANCE = 5;        // 强化装备
+    }
+
+    OpType op = 1;                  // 操作类型
+    uint32 target_uid = 2;          // 目标物品UID
+    int32 count = 3;                // 操作数量（如拆分数量）
+    uint32 dest_slot = 4;           // 目标格子（用于移动）
+    map<string, string> params = 5;  // 扩展参数（如强化消耗材料）
+}
+
+// ==================== 网络协议 ==================== //
+// 客户端 -> 服务器请求
+message BackpackRequest {
+    uint32 player_id = 1;
+    repeated BackpackOp operations = 2; // 批量操作
+    uint64 timestamp = 3;           // 客户端时间戳（防重放）
+}
+
+// 服务器 -> 客户端响应
+message BackpackResponse {
+    message SlotChange {
+        uint32 slot_id = 1;         // 格子ID（0~N）
+        Item item = 2;              // 新物品（空表示移除）
+    }
+
+    uint64 request_id = 1;          // 对应请求的ID
+    bool success = 2;
+    repeated SlotChange changes = 3; // 变更的格子
+    string error_code = 4;          // 错误码（如"INVENTORY_FULL"）
+}
+
+// ==================== 持久化存储 ==================== //
+// 玩家背包存档数据（二进制或数据库存储）
+message BackpackSave {
+    message Slot {
+        uint32 slot_id = 1;
+        Item item = 2;
+        uint32 lock_flag = 3;       // 格子锁定状态（0未锁）
+    }
+
+    uint32 version = 1;             // 数据版本号
+    repeated Slot slots = 2;        // 所有格子数据
+    uint32 capacity = 3;            // 背包容量
+    uint64 last_save_time = 4;      // 最后保存时间戳
+}
