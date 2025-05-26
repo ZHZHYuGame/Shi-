@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package game.inventory;
+
+// 物品基础信息
+message ItemInfo {
+  uint64 item_id = 1;         // 物品唯一ID
+  uint32 template_id = 2;     // 物品模板ID
+  uint32 count = 3;           // 物品数量
+  uint32 level = 4;           // 物品等级
+  map<string, int64> attrs = 5; // 附加属性
+}
+
+// 背包数据
+message InventoryData {
+  uint32 capacity = 1;          // 背包容量
+  repeated ItemInfo items = 2;  // 物品列表
+  map<uint32, uint32> grid_map = 3; // 格子映射 [格子ID:物品ID]
+}
+
+// 获取背包请求
+message GetInventoryReq {
+  uint64 player_id = 1;  // 玩家ID
+}
+
+// 获取背包响应
+message GetInventoryRsp {
+  InventoryData inventory = 1; // 背包数据
+}
+
+// 使用物品请求
+message UseItemReq {
+  uint64 player_id = 1;  // 玩家ID
+  uint64 item_id = 2;    // 物品ID
+  uint32 count = 3;      // 使用数量
+  uint32 target_id = 4;  // 目标ID(如装备目标)
+}
+
+// 使用物品响应
+message UseItemRsp {
+  enum Result {
+    SUCCESS = 0;        // 成功
+    ITEM_NOT_FOUND = 1; // 物品不存在
+    INVALID_COUNT = 2;  // 数量无效
+    CANNOT_USE = 3;     // 无法使用
+  }
+  Result result = 1;              // 结果
+  repeated ItemInfo update_items = 2; // 更新的物品列表
+}
+
+// 背包通知
+message InventoryNotify {
+  enum ChangeType {
+    ADD = 0;      // 添加
+    REMOVE = 1;   // 移除
+    UPDATE = 2;   // 更新
+  }
+  ChangeType type = 1;           // 变更类型
+  repeated ItemInfo items = 2;   // 变更的物品
+}
