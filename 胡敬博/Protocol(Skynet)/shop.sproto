@@ -1,0 +1,34 @@
+.package {
+  type 0 : integer
+  session 1 : integer
+}
+#请求商品列表
+requestProductList{
+  request {
+    category 0 : integer    #商品分类
+  }
+  response {
+    error_code 0 : integer  #因为XXX失败
+    products 1 : *Product   #商品列表
+  }
+}
+
+#商品信息
+Product {
+  id 0 : integer            #商品ID
+  name 1 : string           #商品名称
+  price 2 : integer         #商品价格
+  description 3 : string    #商品描述
+}
+
+#购买商品
+purchaseProduct 2 {
+  request {
+    product_id 0 : integer  #商品ID
+    quantity 1 : integer    #购买数量
+  }
+  response {
+    error_code 0 : integer  #因为XXX失败
+    success 1 : boolean     #是否购买成功
+  }
+}
