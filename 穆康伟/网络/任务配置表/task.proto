@@ -1,0 +1,41 @@
+syntax = "proto3";
+// 任务状态枚举
+enum TaskState 
+{
+  TASK_UNACCEPTED = 0;  // 未接受
+  TASK_IN_PROGRESS = 1; // 进行中
+  TASK_COMPLETED = 2;   // 已完成
+  TASK_REWARDED = 3;    // 已领取奖励
+  TASK_FAILED = 4;      // 失败
+}
+// 客户端操作类型
+enum ClientTaskType 
+{
+  ACCEPT_TASK = 0;   // 接受任务
+  SUBMIT_TASK = 1;   // 提交任务
+  UPDATE_PROGRESS = 2; // 更新进度
+}
+
+// 客户端请求消息体
+message C_STaskRequest 
+{
+  int32 task_id = 2;           // 任务唯一ID
+  ClientTaskType action = 1;  // 操作类型
+  optional int32 progress = 3; // 进度值
+}
+// 服务器响应状态
+enum ResponseCode 
+{
+  SUCCESS = 0;      // 成功
+  ERROR_INVALID_TASK = 1;  // 任务不存在
+  ERROR_CONDITION_NOT_MET = 2; // 条件不满足
+  ERROR_ALREADY_ACCEPTED = 3; // 任务已接受
+}
+message S_CTaskResponse
+{
+    ResponseCode code = 1;        // 状态码
+    string message = 2;           // 错误提示
+    TaskState new_state = 3;      // 更新后的任务状态
+    int32 current_progress = 4;   // 当前进度
+    int32 task_id = 5;            // 对应任务ID
+}
