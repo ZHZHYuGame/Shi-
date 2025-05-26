@@ -1,3 +1,4 @@
+可用3333
 可用2222
 alias git-log='git log --pretty=oneline --all --graph --abbrev-commit'
 
