@@ -1,0 +1,37 @@
+syntax="proto3";
+package ShopMessage;
+///客户端向服务器请求售卖商城格子物品
+message C2S_Shop_SaleShopItem
+{
+    int32 shopItemid=1;
+}
+///服务器向客户端回馈售卖商城格子物品
+message S2C_Shop_SaleShopItem
+{
+    repeated ShopItem shopitem;
+}
+message ShopItem
+{
+    uint32 shopid;//商品唯一ID
+    string name;//商品名称
+    string description;//商品描述
+    float shop_price;//商品价格
+    string shop_icon;//商品图表
+    uint32 stock;//商品库存数量
+    uint32 can_sale_count;//最大购买数量
+    ShopType shoptype;//商品类型
+    Rarity rarity;//商品稀有度
+}
+enum ShopType
+{
+    ITEM=0;//物品
+    EQUIPITEM=1;//装备
+    CONSUMABLE=2;//消耗品
+}
+enum Rarity
+{
+    OMMON = 0;// 普通
+    UNCOMMON = 1;// 稀有
+    RARE = 2;// 史诗
+    LEGENDARY = 3;// 传说
+}
