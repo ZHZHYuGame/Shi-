@@ -1,0 +1,76 @@
+syntax ="proto3";
+package Bag;
+
+message C2S_Bag_GetItems 
+{
+  string player_id = 1;      // 玩家ID
+}
+message S2C_Bag_GetItems 
+{
+  repeated Item items = 1;   // 玩家背包中的物品列表
+}
+//客户端向服务器请求添加物品
+message C2S_Bag_AddItem
+{
+  string player_id = 1;      // 玩家ID
+  string item_id = 2;        // 物品ID
+  uint32 count = 3;         // 数量
+  bool auto_stack = 4;      // 是否自动堆叠
+}
+// 服务器向客户端返回添加物品结果
+message S2C_Bag_AddItem 
+{
+  int32 result = 0;    // 结果码
+  string item_id = 1;        // 物品ID
+  Item item = 2;          // 添加的物品信息
+  uint32 count = 3;         // 数量
+  Inventory inventory = 4;  // 更新后的背包
+}
+// 客户端向服务器请求移除物品
+message C2S_Bag_RemoveItem 
+{
+  string player_id = 1;      // 玩家ID
+  string item_id = 2;        // 物品ID
+  uint32 count = 3;         // 数量
+}
+
+// 服务器向客户端返回移除物品结果
+message S2C_Bag_RemoveItem 
+{
+  uint32 result_code = 1;    // 结果码
+  string item_id = 2;        // 物品ID
+  uint32 count = 3;         // 数量
+  Inventory inventory = 4;  // 更新后的背包
+}
+//背包信息
+message Inventory {
+  string player_id = 1;      // 玩家ID
+  int32 capacity = 2;      // 背包容量
+  int32 used_slots = 3;    // 已使用槽位
+  ItemStack items = 4; // 物品堆叠列表
+}
+//物品信息
+message Item 
+{
+  string item_id = 1;          // 物品唯一ID
+  string name = 2;            // 物品名称
+  string description = 3;     // 物品描述
+  ItemType type = 4;          // 物品类型
+  int32 count = 5;           // 物品数量
+  int32 max_stack = 6;       // 最大堆叠数量
+  int32 level = 7;           // 物品等级
+  bool is_droppable = 8;      // 是否可掉落
+  int32 buy_price = 9;      // 购买价格
+}
+// 物品类型枚举
+enum ItemType {
+  Consume = 0;           // 消耗品
+  Equip = 1;            // 装备
+  Material = 2;             // 材料
+}
+// 任务结果枚举
+enum Result
+{
+    Success=0,
+    Fail=1,
+}
