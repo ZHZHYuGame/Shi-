@@ -1,0 +1,196 @@
+syntax = "proto3";
+package myChat;
+
+
+// 消息类型枚举
+enum MessageType {
+  TEXT = 0;                 // 文本消息
+  IMAGE = 1;                // 图片消息
+  AUDIO = 2;                // 语音消息
+  VIDEO = 3;                // 视频消息
+  SYSTEM = 4;               // 系统消息
+  NOTIFICATION = 5;         // 通知消息
+  COMMAND = 6;              // 命令消息
+  EMOJI = 7;                // 表情消息
+  FILE = 8;                 // 文件消息
+}
+
+// 消息优先级枚举
+enum MessagePriority {
+  NORMAL = 0;               // 普通
+  IMPORTANT = 1;            // 重要
+  URGENT = 2;               // 紧急
+}
+
+// 基础消息结构
+message Message {
+  string message_id = 1;    // 消息唯一ID
+  MessageType type = 2;     // 消息类型
+  string sender_id = 3;     // 发送者ID
+  string sender_name = 4;   // 发送者名称
+  string receiver_id = 5;   // 接收者ID(用户ID或频道ID)
+  string content = 6;       // 消息内容
+  uint64 timestamp = 7;     // 时间戳
+  MessagePriority priority = 8; // 优先级
+  bool is_read = 9;         // 是否已读
+  map<string, string> metadata = 10; // 元数据
+  repeated Attachment attachments = 11; // 附件
+}
+
+// 消息附件
+message Attachment {
+  string file_id = 1;       // 文件ID
+  string file_name = 2;     // 文件名
+  string file_type = 3;     // 文件类型
+  string file_url = 4;      // 文件URL
+  uint64 file_size = 5;     // 文件大小
+  string thumbnail_url = 6; // 缩略图URL(图片/视频)
+}
+
+// ================ 会话管理 ================
+// 会话类型枚举
+enum ConversationType {
+  PRIVATE = 0;              // 私聊
+  GROUP = 1;                // 群组
+  CHANNEL = 2;              // 频道
+  SYSTEM = 3;               // 系统
+}
+
+// 会话信息
+message Conversation {
+  string conversation_id = 1; // 会话ID
+  ConversationType type = 2; // 会话类型
+  string name = 3;            // 会话名称
+  string icon_url = 4;        // 会话图标
+  string last_message = 5;    // 最后一条消息
+  uint64 last_timestamp = 6;  // 最后消息时间戳
+  uint32 unread_count = 7;    // 未读消息数
+  repeated string member_ids = 8; // 成员ID列表
+  map<string, string> metadata = 9; // 元数据
+}
+
+// 会话列表
+message ConversationList {
+  repeated Conversation conversations = 1; // 会话列表
+  uint32 total_count = 2;                 // 总数
+  uint32 page_size = 3;                   // 每页数量
+  uint32 page_number = 4;                 // 页码
+}
+
+// ================ 用户状态 ================
+// 用户在线状态枚举
+enum UserStatus {
+  ONLINE = 0;               // 在线
+  AWAY = 1;                 // 离开
+  BUSY = 2;                 // 忙碌
+  OFFLINE = 3;              // 离线
+}
+
+// 用户状态信息
+message UserStatusInfo {
+  string user_id = 1;       // 用户ID
+  string username = 2;      // 用户名
+  UserStatus status = 3;    // 在线状态
+  uint64 last_active_time = 4; // 最后活跃时间
+  string status_message = 5; // 状态消息
+}
+
+// ================ 聊天服务接口 ================
+// 聊天服务
+service ChatService {
+  rpc SendMessage (SendMessageRequest) returns (SendMessageResponse) {} // 发送消息
+  rpc ReceiveMessages (ReceiveMessagesRequest) returns (stream Message) {} // 接收消息(流式)
+  rpc GetConversations (GetConversationsRequest) returns (ConversationList) {} // 获取会话列表
+  rpc CreateGroup (CreateGroupRequest) returns (Conversation) {} // 创建群组
+  rpc JoinChannel (JoinChannelRequest) returns (JoinChannelResponse) {} // 加入频道
+  rpc LeaveChannel (LeaveChannelRequest) returns (LeaveChannelResponse) {} // 离开频道
+  rpc UpdateUserStatus (UpdateUserStatusRequest) returns (UpdateUserStatusResponse) {} // 更新用户状态
+  rpc GetUserStatus (GetUserStatusRequest) returns (UserStatusInfo) {} // 获取用户状态
+}
+
+// 发送消息请求
+message SendMessageRequest {
+  string sender_id = 1;     // 发送者ID
+  string receiver_id = 2;   // 接收者ID
+  MessageType type = 3;     // 消息类型
+  string content = 4;       // 消息内容
+  MessagePriority priority = 5; // 优先级
+  repeated Attachment attachments = 6; // 附件
+}
+
+// 发送消息响应
+message SendMessageResponse {
+  uint32 result_code = 1;   // 结果码
+  string message = 2;       // 消息
+  string message_id = 3;    // 消息ID
+  uint64 timestamp = 4;     // 时间戳
+}
+
+// 接收消息请求
+message ReceiveMessagesRequest {
+  string user_id = 1;       // 用户ID
+  uint64 last_timestamp = 2; // 上次接收时间戳
+  repeated string conversation_ids = 3; // 会话ID列表
+}
+
+// 获取会话列表请求
+message GetConversationsRequest {
+  string user_id = 1;       // 用户ID
+  ConversationType type = 2; // 会话类型
+  string keyword = 3;       // 搜索关键词
+  uint32 page_size = 4;     // 每页数量
+  uint32 page_number = 5;   // 页码
+}
+
+// 创建群组请求
+message CreateGroupRequest {
+  string creator_id = 1;    // 创建者ID
+  string group_name = 2;    // 群组名称
+  string group_description = 3; // 群组描述
+  string icon_url = 4;      // 图标URL
+  repeated string member_ids = 5; // 初始成员ID
+  bool is_public = 6;       // 是否公开
+}
+
+// 加入频道请求
+message JoinChannelRequest {
+  string user_id = 1;       // 用户ID
+  string channel_id = 2;    // 频道ID
+}
+
+// 加入频道响应
+message JoinChannelResponse {
+  uint32 result_code = 1;   // 结果码
+  string message = 2;       // 消息
+  Conversation channel = 3; // 频道信息
+}
+
+// 离开频道请求
+message LeaveChannelRequest {
+  string user_id = 1;       // 用户ID
+  string channel_id = 2;    // 频道ID
+}
+
+// 离开频道响应
+message LeaveChannelResponse {
+  uint32 result_code = 1;   // 结果码
+  string message = 2;       // 消息
+}
+
+// 更新用户状态请求
+message UpdateUserStatusRequest {
+  string user_id = 1;       // 用户ID
+  UserStatus status = 2;    // 状态
+  string status_message = 3; // 状态消息
+}
+
+// 更新用户状态响应
+message UpdateUserStatusResponse {
+  uint32 result_code = 1;   // 结果码
+  string message = 2;       // 消息
+}
+
+// 获取用户状态请求
+message GetUserStatusRequest {
+  string user_id = 1;       // 用户ID
+}
