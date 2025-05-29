@@ -1,0 +1,80 @@
+syntax = "proto3";
+package GameMessage;
+
+///客户端向服务器请求当前进行任务
+message C2S_Task_CurrComplete
+{
+    int32 playerID=1;
+}
+
+///服务器向客户端返回当前进行任务
+message S2C_task_CurrComplete
+{
+    // repeated int32 taskID=1; 
+    repeated Task tasks=1; // 当前进行的任务列表
+}
+///客户端向服务器请求当前任务进度
+message C2S_Task_CompleteState
+{
+    int32 taskID=1;
+}
+///服务器向客户端返回当前任务进度
+message S2C_Task_CompleteState
+{
+    int32 Result=0;
+    int32 TaskCompleteState=1;
+}
+///客户端向服务器请求任务奖励
+// message C2S_Task_Award
+// {
+//     int32 taskID=1;
+// }
+///服务器向客户端返回任务奖励
+// message S2C_Task_Award
+// {
+//     int32 Result=0;
+//     repeated ItemReward item_reward=1; // 物品奖励列表
+// }
+message Task 
+{
+  int32 task_id = 1;          // 任务ID
+  string name = 2;           // 任务名称
+  string description = 3;    // 任务描述
+  TaskType type = 4;         // 任务类型
+  TaskDifficulty difficulty = 5; // 任务难度
+  ItemReward rewards = 6; // 奖励列表
+}
+// 任务类型枚举
+enum TaskType {
+  Main = 0;                 // 主线任务
+  Side = 1;                 // 支线任务
+  Daily = 2;                // 日常任务
+}
+
+// 任务难度枚举
+enum TaskDifficulty {
+  Easy = 0;                 // 简单
+  Normal = 1;               // 普通
+  Hard = 2;                 // 困难
+}
+// 物品奖励
+message ItemReward {
+  string item_id = 1;        // 物品ID
+  uint32 min_count = 2;     // 最小数量
+  uint32 max_count = 3;     // 最大数量
+  float probability = 4;    // 掉落概率(0.0-1.0)
+}
+// 任务完成状态枚举
+enum TaskCompleteState
+{
+    Task_Accept=0,
+    Task_Progress=1,
+    Task_Complete=2,
+}
+// 任务结果枚举
+enum Result
+{
+    Task_Success=0,
+    Task_FailByNet=1,
+    Task_FailBySelf=1,
+}
