@@ -1,23 +1,37 @@
-local Cube
+CS=CS or{}
 function LuaStart()
     --print("游戏入口---Lua部分生命周期Start方法随着游戏运行Start开始")
-   Cube =CS.UnityEngine.GameObject.Find("Cube")   --这里是属性用"."
 end
 
 function LuaUpdate()
-Cube.gameObject.transform.position=Cube.gameObject.transform.position+Input.GetAxis("Vertical")*Cube.transform.forward*0.02;
-Cube.gameObject.transform.eulerAngles=Cube.gameObject.transform.eulerAngles+Input.GetAxis("Horizontal")*Cube.transform.up*0.04;
+
 end
 require("Common/head")
 require("Common/BaseClass")
 require("Common/LuaEventTriggerType")
 require("Framework/UIEnum")
 UBase = require("Framework/UIBase")
+require("Common/PathTitle")
+require("Net/NetMessageID")
+MessageControll= require("MessageControll")
+
+
 --lua中没有对象的概念，官方的翻译是模块
-local uMgr = require( "Framework/UIManager" )
+--[[local uMgr = require( "Framework/UIManager" )
 uiManager = uMgr.New()
-uiManager:OpenUI(uiEnum.Login)
---[[--Lua 有编译顺序，有编译顺序代表调用执行前必须声明好
+uiManager:OpenUI(uiEnum.Login)--]]
+
+local player=UnityEngine.GameObject.Find("Player")
+player.gameObject:AddComponent(typeof(CS.Player))
+--CS.Player.OnTriggerEnter()
+
+function LuaUpdata()
+     h = Input.GetAxis("Horizontal");
+     v = Input.GetAxis("Vertical");
+    player.transform.position=   player.transform.position+Vector3(h, 0, v)*Time.deltaTime*3;
+end
+--uiManager.OpenUI(uiEnum.Chat)
+--Lua 有编译顺序，有编译顺序代表调用执行前必须声明好
 --声明变量有两种情况1.local, 2.不加local
 --1.string 
 local s = "aaa"
@@ -32,7 +46,6 @@ end
 --3.bool
 
 --4.function 
-
 
 function TestFun(a, b, c)
     return 1,2
@@ -92,9 +105,7 @@ end
 CS.TestLua.TestFunCShap()
 
 local class = CS.TestLua()
-class.TestFun1(class)
-
-
+--class.TestFun1(class)
 
 local canvas = CS.UnityEngine.GameObject.Find("Canvas")
 
@@ -106,7 +117,7 @@ function Test1()
     print("Lua 里执行点击逻辑")
 end
 
-UIEventListener.AddObjEvent(cube):AddEventListener(LuaEventTriggerType.PointerClick, Test1)
+--UIEventListener.AddObjEvent(cube):AddEventListener(LuaEventTriggerType.PointerClick, Test1)
 
 local tab1 = {}
 local tab2 = {}
@@ -125,7 +136,7 @@ print("meatTables = ", meatTables)
 
 print("tab1 is tab3? = ", tab1 == tab3)
 print("tab2 is tab3? = ", tab2 == tab3)
-print("meatTables is tab3? = ", meatTables == tab3)]]--]]--
+print("meatTables is tab3? = ", meatTables == tab3)]]--
 
 
 
