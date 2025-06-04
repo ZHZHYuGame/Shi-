@@ -1,10 +1,12 @@
-
+local Cube
 function LuaStart()
     --print("游戏入口---Lua部分生命周期Start方法随着游戏运行Start开始")
+   Cube =CS.UnityEngine.GameObject.Find("Cube")   --这里是属性用"."
 end
 
 function LuaUpdate()
-
+Cube.gameObject.transform.position=Cube.gameObject.transform.position+Input.GetAxis("Vertical")*Cube.transform.forward*0.02;
+Cube.gameObject.transform.eulerAngles=Cube.gameObject.transform.eulerAngles+Input.GetAxis("Horizontal")*Cube.transform.up*0.04;
 end
 require("Common/head")
 require("Common/BaseClass")
