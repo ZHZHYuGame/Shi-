@@ -33,7 +33,7 @@ Physics = UnityEngine.Physics
 Quaternion = UnityEngine.Quaternion
 InputField = UnityEngine.UI.InputField
 AssetBundleManager = UnityEngine.AssetBundleManager
- 
+RaycastHelper = CS.RaycastHelper
 Application = UnityEngine.Application
 AssetBundle = UnityEngine.AssetBundle
 AssetBundleManifest = UnityEngine.AssetBundleManifest
