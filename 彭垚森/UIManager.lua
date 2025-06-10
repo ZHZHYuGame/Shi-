@@ -10,7 +10,7 @@ end
 
 --获取对应层所在的Canvas
 function uiManager:GetLayerToCanvas(layer)
-    return GameObject:Find(layer)
+    return GameObject.Find(layer)
 end
 --打开UI方法
 --结构是上面模拟的对象：方法
@@ -35,7 +35,8 @@ function uiManager:OpenUI(id)
         self.UIDict[id]=Control
         else self.UIDict[id].view.gameObject:SetActive(true)]]--   
         local config=require("UI/"..id.."/"..id.."Config")
-        local uiPrefab=GameObject.Instantiate(Resources.Load(id),self.canvasParent.transform)
+        local uiPrefab=GameObject.Instantiate(Resources.Load(id),self:GetLayerToCanvas(config.Layer).transform)
+        --local uiPrefab=GameObject.Instantiate(Resources.Load(id),self.canvasParent.transform)
         --MVC脚本1模块导入
         config.ControlCode=config.ControlCode.New()
         config.ControlCode.model=config.ModelCode.New()
