@@ -41,27 +41,48 @@ public class RedPointMgr<T> : Singleton<RedPointMgr<T>>
         if(!redPointDict.ContainsKey(currPoint))
         {
             //当前红点节点
-            RedpointItem currItem = new RedpointItem()
+            redPointDict[currPoint]= new RedpointItem()
             {
-                type = currPoint
+                type = currPoint,
+                parentItemList=new List<RedpointItem>(),
+                childrenItemList=new List<RedpointItem>()
             };
         }
-        //判断当前节点的父节点是否存在
-        if (redPointDict[currPoint].parentItemList.Find(x=>x.type==parentPoint)==null)
+        if(!redPointDict.ContainsKey(parentPoint))
         {
-            //父级红点节点
-            RedpointItem parenItem = new RedpointItem()
+            redPointDict[parentPoint] = new RedpointItem
             {
-                type = parentPoint
+                type=parentPoint,
+                parentItemList=new List<RedpointItem>(),
+                childrenItemList=new List<RedpointItem>()
             };
-            //添加父节点到当前节点的父节点里
-            redPointDict[currPoint].parentItemList.Add(parenItem);
         }
-        //要给父节点里添加当前节点（子节点）
-        foreach(var pItem in redPointDict[currPoint].parentItemList)
+        var currItem = redPointDict[currPoint];
+        var parentItem = redPointDict[parentPoint];
+        if(!currItem.parentItemList.Contains(parentItem))
         {
-            pItem.childrenItemList.Add(redPointDict[currPoint]);
+            currItem.parentItemList.Add(parentItem);
         }
+        if(!parentItem.childrenItemList.Contains(currItem))
+        {
+            parentItem.childrenItemList.Add(currItem);
+        }
+        ////判断当前节点的父节点是否存在
+        //if (redPointDict[currPoint].parentItemList.Find(x=>x.type==parentPoint)==null)
+        //{
+        //    //父级红点节点
+        //    RedpointItem parenItem = new RedpointItem()
+        //    {
+        //        type = parentPoint
+        //    };
+        //    //添加父节点到当前节点的父节点里
+        //    redPointDict[currPoint].parentItemList.Add(parenItem);
+        //}
+        ////要给父节点里添加当前节点（子节点）
+        //foreach(var pItem in redPointDict[currPoint].parentItemList)
+        //{
+        //    pItem.childrenItemList.Add(redPointDict[currPoint]);
+        //}
       
     }
     /// <summary>
@@ -85,15 +106,15 @@ public class RedPointMgr<T> : Singleton<RedPointMgr<T>>
     /// </summary>
     /// <param name="type"></param>
     /// <param name="state"></param>
-    public void RedPointUpdata(RedpointType type,bool state)
+    public void RedPointUpdata(RedpointType type,bool state,T t)
     {
         //红点之间关系（确定影响的节点关系）
         if(redPointDict.ContainsKey(type))
         {
             //当前节点红点显示状态刷新
             redPointDict[type].isShow = state;
-            redPointToUIDict[type]?.Invoke(default(T));
-            UpDataParentNodes(redPointDict[type]);
+            redPointToUIDict[type]?.Invoke(t);
+            UpDataParentNodes(redPointDict[type],t);
             ////通知父级显隐状态（父级要遍历子节点的列表，判断子节点的显示状态，如有一个为显示状态，则父级节点红点为显示状态，如果全部节点全部为不显示状态，则父节点为不显示状态）
             //foreach (var par in redPointDict[type].parentItemList)
             //{
@@ -112,14 +133,14 @@ public class RedPointMgr<T> : Singleton<RedPointMgr<T>>
             //    }
             //}
         }
-        //红点状态影响的UI状态显示
-        if(redPointToUIDict.ContainsKey(type))
-        {
+        ////红点状态影响的UI状态显示
+        //if(redPointToUIDict.ContainsKey(type))
+        //{
 
-        }
+        //}
     }
 
-    private void UpDataParentNodes(RedpointItem redpointItem)
+    private void UpDataParentNodes(RedpointItem redpointItem,T t)
     {
        foreach(var parentItem in redpointItem.parentItemList)
         {
@@ -130,6 +151,7 @@ public class RedPointMgr<T> : Singleton<RedPointMgr<T>>
                 if(child.isShow)
                 {
                     hasVisibleChild = true;
+                    //redPointToUIDict[parentItem.type]?.Invoke();
                     break;
                 }
             }
@@ -137,12 +159,10 @@ public class RedPointMgr<T> : Singleton<RedPointMgr<T>>
             if (parentItem.isShow != hasVisibleChild)
             {
                 parentItem.isShow = hasVisibleChild;
-
-                //通知UI更新
-                redPointToUIDict[parentItem.type]?.Invoke(default(T));
+                redPointToUIDict[parentItem.type]?.Invoke(t);
 
                 //递归更新上层父节点
-                UpDataParentNodes(parentItem);
+                UpDataParentNodes(parentItem, t);
             }
 
         }
